@@ -1,16 +1,41 @@
-# This is a sample Python script.
+import argparse
+import logging
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from wbtools.db.generic import WBGenericDBManager
+from wbtools.literature.corpus import CorpusManager
 
 
-# Press the green button in the gutter to run the script.
+def main():
+    parser = argparse.ArgumentParser(description="Entity Extraction Pipeline - Email Addresses")
+    parser.add_argument("-N", "--db-name", metavar="db_name", dest="db_name", type=str)
+    parser.add_argument("-U", "--db-user", metavar="db_user", dest="db_user", type=str)
+    parser.add_argument("-P", "--db-password", metavar="db_password", dest="db_password", type=str, default="")
+    parser.add_argument("-H", "--db-host", metavar="db_host", dest="db_host", type=str)
+    parser.add_argument("-w", "--tazendra-ssh-username", metavar="tazendra_ssh_user", dest="tazendra_ssh_user",
+                        type=str)
+    parser.add_argument("-z", "--tazendra_ssh_password", metavar="tazendra_ssh_password", dest="tazendra_ssh_password",
+                        type=str)
+    parser.add_argument("-l", "--log-file", metavar="log_file", dest="log_file", type=str, default=None,
+                        help="path to log file")
+    parser.add_argument("-L", "--log-level", dest="log_level", choices=['DEBUG', 'INFO', 'WARNING', 'ERROR',
+                                                                        'CRITICAL'], default="INFO",
+                        help="set the logging level")
+    parser.add_argument("-m", "--max-num-papers", metavar="max_num_papers", dest="max_num_papers", type=int)
+
+    args = parser.parse_args()
+    logging.basicConfig(filename=args.log_file, level=args.log_level,
+                        format='%(asctime)s - %(name)s - %(levelname)s:%(message)s')
+
+    cm = CorpusManager()
+    db_manager = WBGenericDBManager(dbname=args.db_name, user=args.db_user, password=args.db_password,
+                                    host=args.db_host)
+    already_extracted_ids = db_manager.get_paper_ids_with_email_addresses_extracted()
+    cm.load_from_wb_database(args.db_name, args.db_user, args.db_password, args.db_host,
+                             tazendra_ssh_user=args.tazendra_ssh_user, tazendra_ssh_passwd=args.tazendra_ssh_password,
+                             max_num_papers=args.max_num_papers, exclude_ids=already_extracted_ids)
+    for paper in cm.get_all_papers():
+        paper.extract_all_email_addresses_from_text_and_write_to_db()
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()
