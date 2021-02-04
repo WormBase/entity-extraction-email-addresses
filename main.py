@@ -32,7 +32,8 @@ def main():
     already_extracted_ids = db_manager.get_paper_ids_with_email_addresses_extracted()
     cm.load_from_wb_database(args.db_name, args.db_user, args.db_password, args.db_host,
                              tazendra_ssh_user=args.tazendra_ssh_user, tazendra_ssh_passwd=args.tazendra_ssh_password,
-                             max_num_papers=args.max_num_papers, exclude_ids=already_extracted_ids)
+                             max_num_papers=args.max_num_papers, exclude_ids=already_extracted_ids, load_bib_info=False,
+                             load_curation_info=False)
     for paper in cm.get_all_papers():
         paper.extract_all_email_addresses_from_text_and_write_to_db()
 
