@@ -4,6 +4,8 @@ import logging
 from wbtools.db.generic import WBGenericDBManager
 from wbtools.literature.corpus import CorpusManager
 
+logger = logging.getLogger(__name__)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Entity Extraction Pipeline - Email Addresses")
@@ -36,6 +38,7 @@ def main():
                              load_curation_info=False)
     for paper in cm.get_all_papers():
         paper.extract_all_email_addresses_from_text_and_write_to_db()
+        logger.info("Extracted email address from paper " + paper.paper_id)
 
 
 if __name__ == '__main__':
