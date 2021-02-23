@@ -39,6 +39,7 @@ def main():
     for paper in cm.get_all_papers():
         paper.extract_all_email_addresses_from_text_and_write_to_db()
         logger.info("Extracted email address from paper " + paper.paper_id)
+    logger.info("Pipeline finished successfully")
 
 
 if __name__ == '__main__':
