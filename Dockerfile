@@ -17,17 +17,7 @@ ENV TAZENDRA_SSH_USER=""
 ENV TAZENDRA_SSH_PASSWD=""
 
 ADD crontab /etc/cron.d/email_ext-cron
-RUN chmod 0644 /etc/cron.d/email_ext-cron
-RUN touch /var/log/email_ext_pipeline.log
-RUN crontab /etc/cron.d/email_ext-cron
 
 ENV PYTHONPATH=$PYTHONPATH:/usr/src/app/
 
-CMD echo $DB_HOST > /etc/email_ext_db_host && \
-    echo $DB_NAME > /etc/email_ext_db_name && \
-    echo $DB_USER > /etc/email_ext_db_user && \
-    echo $DB_PASSWD > /etc/email_ext_db_passwd && \
-    echo $MAX_NUM_PAPERS > /etc/email_ext_max_num_papers && \
-    echo $TAZENDRA_SSH_USER > /etc/email_ext_tazendra_ssh_user && \
-    echo $TAZENDRA_SSH_PASSWD > /etc/email_ext_tazendra_ssh_passwd && \
-    cron && tail -f /dev/null
+CMD ["/bin/bash", "startup_script.sh"]

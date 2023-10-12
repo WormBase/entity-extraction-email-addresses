@@ -1,1 +1,4 @@
-00 21 * * * export PYTHONPATH=$PYTHONPATH:/usr/src/app/; /usr/local/bin/python3 /usr/src/app/main.py -L INFO -N $(cat /etc/email_ext_db_name | sed 's/\n//g') -U $(cat /etc/email_ext_db_user | sed 's/\n//g') -P \"$(cat /etc/email_ext_db_passwd | sed 's/\n//g')\" -H $(cat /etc/email_ext_db_host | sed 's/\n//g') -w $(cat /etc/email_ext_tazendra_ssh_user | sed 's/\n//g') -z $(cat /etc/email_ext_tazendra_ssh_passwd | sed 's/\n//g') -m $(cat /etc/email_ext_max_num_papers | sed 's/\n//g') >> /var/log/email_ext_pipeline.log 2>&1
+SHELL=/bin/bash
+BASH_ENV=/container.env
+
+00 21 * * * /usr/local/bin/python3 /usr/src/app/main.py -L INFO -N $DB_NAME -U $DB_USER -P $DB_PASSWD -H $DB_HOST -m $MAX_NUM_PAPERS >> /var/log/email_ext_pipeline.log 2>&1
