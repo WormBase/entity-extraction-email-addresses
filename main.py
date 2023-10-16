@@ -32,6 +32,7 @@ def main():
                              max_num_papers=args.max_num_papers,
                              exclude_ids=already_extracted_ids,
                              load_bib_info=False,
+                             exclude_pap_types=["Meeting_abstract"],
                              load_curation_info=False)
     for paper in cm.get_all_papers():
         paper.extract_all_email_addresses_from_text_and_write_to_db()
